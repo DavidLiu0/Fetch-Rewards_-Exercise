@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MyAnswer</title>
+</head>
+
+<body style="width: 100%;height: 100%;">
+    <div style="position:relative;width: 100%;height: 600px;">
+        <div style="position:absolute;left:50%;top:10%;transform:translate(-50%,0%);width: 800px;height: 250px;border: solid cornflowerblue 3px;padding: 20px;">
+            <a>payer:</a><input type="text" name="payer" id="payer">
+            <a>points</a><input type="text" name="points" id="points">
+            <a>timestamp</a><input type="text" name="timestamp" id="timestamp">
+            <input type="submit" value="submit" onclick="http()">
+            <p style="width: 100%;text-align: center">Your points data</p>
+            <a id="print"></a>
+        </div>
+
+        <div style="position:absolute;left:50%;top:65%;transform:translate(-50%,0%);width: 800px;height: 200px;border: solid cornflowerblue 3px;padding: 20px;">
+            <a>points:</a><input type="text"  id="costpoints">
+            <input type="submit" value="CostPoints" onclick="CostPoints()">
+            <input type="submit" value="GetResult" onclick="GetResult()">
+            <p style="width: 100%;text-align: center">End Result</p>
+            <a id="costdata"></a>
+        </div>
+
+
+    </div>
+
+</body>
+<script>
+    function http(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/AddRoute", true);
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200){
+                const json=JSON.parse(xhr.responseText);
+                let text = "";
+                for (let i=0;i<json.length;i++){
+                    text = text + JSON.stringify(json[i])+"\n"
+                }
+                document.getElementById("print").innerText=text;
+            }
+        }
+        let payer = document.getElementById("payer").value
+        let points = document.getElementById("points").value
+        let timestamp = document.getElementById("timestamp").value
+        let sendData = {"payer": payer, "points": Number(points), "timestamp": timestamp};
+        xhr.send(JSON.stringify(sendData));
+    }
+
+    function CostPoints(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/CostPoints", true);
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200){
+                const json=JSON.parse(xhr.responseText);
+                let text = "";
+                for (let i=0;i<json.length;i++){
+                    text = text + JSON.stringify(json[i])+"\n"
+                }
+                document.getElementById("costdata").innerText=text;
+            }
+        }
+        let points = document.getElementById("costpoints").value
+        let sendData = {"points": Number(points),"Type":"A"};
+        xhr.send(JSON.stringify(sendData));
+    }
+
+    function GetResult(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/CostPoints", true);
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200){
+                const json=JSON.parse(xhr.responseText);
+                document.getElementById("costdata").innerText=xhr.responseText;
+            }
+        }
+        let points = document.getElementById("costpoints").value
+        let sendData = {"points": Number(points),"Type":"B"};
+        xhr.send(JSON.stringify(sendData));
+    }
+
+
+</script>
+</html>
