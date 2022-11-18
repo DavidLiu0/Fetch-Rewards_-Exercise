@@ -1,4 +1,3 @@
-# 工程简介
+# Project Introduction
 
-# 延伸阅读
-
+# Extended Reading
